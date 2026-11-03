@@ -1,0 +1,16 @@
+#Python environment & cache
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+#Database & environment secrets
+*.db
+*.sqlite3
+.env
+
+#IDE / OS Junk
+.vscode/
+.idea/
+.DS_Store

@@ -1,0 +1,34 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-customs_user}:${POSTGRES_PASSWORD:-customs_pass}@db:5432/${POSTGRES_DB:-customs_manifests}
+      - DB_POOL_SIZE=10
+      - DB_MAX_OVERFLOW=20
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./app:/app/app
+
+  db:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-customs_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-customs_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-customs_manifests}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-customs_user} -d ${POSTGRES_DB:-customs_manifests}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:

@@ -1,0 +1,12 @@
+[
+    {
+        "sku": "DRUM-99",
+        "weight_kg": 45.0,
+        "is_hazardous": true
+    },
+    {
+        "sku": "BOX-01",
+        "weight_kg": 42.69,
+        "is_hazardous": false
+    }
+]
