@@ -157,3 +157,34 @@ def test_duplicate_sku_rejection(client):
     # Duplicate SKU creation should fail with a conflict/bad request
     res2 = client.post("/manifests", json=payload)
     assert res2.status_code in [400, 409, 422]
+
+@pytest.mark.parametrize("field" , ["item_name", "quantity", "destination", "weight_kg", "is_hazardous"])
+def test_update_rejects_null_fields(client, field):
+    """Ensure that updating a manifest with null fields is rejected."""
+    # Create a valid manifest first
+    payload = {
+        "sku": "UPD-TEST-01",
+        "item_name": "Update Test Cargo",
+        "quantity": 5,
+        "destination": "Port Y",
+        "weight_kg": 50.0,
+        "is_hazardous": False,
+        }
+    create_res = client.post("/manifests", json=payload)
+    assert create_res.status_code == 201
+
+    # Attempt to update with a null field
+    update_payload = payload.copy()
+    update_payload[field] = None
+    update_res = client.put(f"/manifests/{payload['sku']}", json=update_payload)
+    assert update_res.status_code in [400, 422]
+
+def test_cors_does_not_allow_credentials(client):
+    """Verify that CORS configuration does not allow credentials."""
+    headers = {
+        "Origin": "http://example.com",
+        "Access-Control-Request-Method": "GET",
+    }
+    res = client.options("/manifests", headers=headers)
+    assert res.status_code == 200
+    assert res.headers.get("access-control-allow-credentials") != "true"

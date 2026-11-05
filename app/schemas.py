@@ -6,7 +6,7 @@ ORM mode serialization via ConfigDict(from_attributes=True).
 
 from datetime import datetime
 from typing import List, Optional, Dict, Any
-from pydantic import BaseModel, Field, ConfigDict, field_validator
+from pydantic import BaseModel, Field, ConfigDict, field_validator, model_validator
 
 
 class ManifestBase(BaseModel):
@@ -69,6 +69,16 @@ class ManifestUpdate(BaseModel):
     destination: Optional[str] = Field(None, min_length=2, max_length=128)
     weight_kg: Optional[float] = Field(None, gt=0.0)
     is_hazardous: Optional[bool] = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def reject_nulls(cls, data: Dict[str, Any]) -> Dict[str, Any]:
+        # reject None values to prevent overwriting existing fields with nulls
+        if isinstance(data, dict):
+            for field_name, value in data.items():
+                if value is None:
+                    raise ValueError(f"Field '{field_name}' cannot be null in update")
+        return data
 
 
 class ManifestResponse(ManifestBase):
