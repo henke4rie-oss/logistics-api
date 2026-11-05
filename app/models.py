@@ -2,7 +2,7 @@
 
 # app/models.py
 from datetime import datetime, timezone
-from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, String, false
 from sqlalchemy.orm import relationship
 from app.database import Base
 
@@ -15,7 +15,7 @@ class ManifestModel(Base):
     quantity = Column(Integer, nullable=False)
     destination = Column(String, nullable=False)
     weight_kg = Column(Float, nullable=False)
-    is_hazardous = Column(Boolean, default=False)
+    is_hazardous = Column(Boolean, nullable=False, default=False, server_default=false())
     
     # Required by Pydantic response schemas
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
