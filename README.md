@@ -20,7 +20,7 @@ Containerized FastAPI service for managing customs and container manifest data. 
 * Bulk ingestion endpoint with per-row validation, duplicate handling, and optional `atomic_mode` transaction rollback.
 * Query filtering, text search, and pagination on list routes.
 * Aggregate stats: gross weight totals, hazardous goods ratios, and volume broken down by destination.
-* Audit logging triggered on write and update operations.
+* Audit log entries written on single create and update.
 * Automated database schema migrations via Alembic on container start.
 
 ## Quick Start
